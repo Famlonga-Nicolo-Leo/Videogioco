@@ -1,23 +1,26 @@
-const players = {
-    p1: {
-        x: 100,
-        y: 300,
-        width: 60,
-        isBlocking: false,
-        facing: 'right'
+ const pg1={
+    width : 100,
+    height : 100,
+    x: 100,
+    y: 100,
+    color: "#3498db",  
+    speed : 30,
+    disegna_pg: function() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     },
-    p2: {
-        x: 700,
-        y: 300,
-        width: 60,
-        height: 120,
-        health: 100,
-        isBlocking: false,
-        facing: 'left'
+    tasti: function() {
+    if (keys.ArrowRight) {
+        this.x += this.speed;
     }
-};
-
-const controls = {
-    p1: { left: 'a', right: 'd', up: 'w', block: 's'},
-    p2: { left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp'}
-};
+    if (keys.ArrowLeft) {
+        this.x -= this.speed;
+    }
+    if (keys.ArrowUp) {
+    
+    }
+    if (keys.ArrowDown) {
+    
+}
+    }
+}

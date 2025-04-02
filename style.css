@@ -8,7 +8,10 @@ body {
     height: 100vh;
 }
 
-#gameCanvas {
-    border: 2px solid #800000;
-    image-rendering: pixelated;
+.canvas {
+    width: 1300px;
+    height: 700px;
+    background-color: #000;
+    border: 2px solid red;
 }
+
