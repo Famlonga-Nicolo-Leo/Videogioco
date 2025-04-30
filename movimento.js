@@ -25,23 +25,25 @@ function controlliRettangolo1() {
 }
 
 function controlliRettangolo2() {
-    // --- Movimento orizzontale per Player 2 (freccia sinistra e destra) ---
-    if (myGameArea.keys[37] && rettangolo2.x > 0) { // Freccia sinistra premuta
-        rettangolo2.speedX = -5;
-    } else if (myGameArea.keys[39] && rettangolo2.x + rettangolo2.width < 800) { // Freccia destra
-        rettangolo2.speedX = 5;
+    // --- Movimento orizzontale per Player 2 ---
+    if (rettangolo2.isCrouching) {
+        // Movimento quando accovacciato (più lento)
+        if (myGameArea.keys[37] && rettangolo2.x > 0) {
+            rettangolo2.speedX = -2.5; // Sinistra lento
+        } else if (myGameArea.keys[39] && rettangolo2.x + rettangolo2.width < 800) {
+            rettangolo2.speedX = 2; // Destra lento
+        } else {
+            rettangolo2.speedX = 0;
+        }
     } else {
-        rettangolo2.speedX = 0;
-    }
-
-    // !!! Questo blocco è RIDONDANTE e sovrascrive quello sopra !!!
-    // Se si è accovacciati, cambia solo la velocità in modo che sia più lenta
-    if (myGameArea.keys[37] && rettangolo2.x > 0 && rettangolo2.isCrouching == true) {
-        rettangolo2.speedX = -2.5; // Muovi a sinistra lentamente se accovacciato
-    } else if (myGameArea.keys[39] && rettangolo2.x + rettangolo2.width < 800 && rettangolo2.isCrouching == true) {
-        rettangolo2.speedX = 2; // Muovi a destra lentamente se accovacciato
-    } else {
-        rettangolo2.speedX = 0; // Nessun movimento
+        // Movimento normale (non accovacciato)
+        if (myGameArea.keys[37] && rettangolo2.x > 0) {
+            rettangolo2.speedX = -5; // Sinistra normale
+        } else if (myGameArea.keys[39] && rettangolo2.x + rettangolo2.width < 800) {
+            rettangolo2.speedX = 5; // Destra normale
+        } else {
+            rettangolo2.speedX = 0;
+        }
     }
 
     // --- Salto (freccia su) ---
@@ -52,13 +54,13 @@ function controlliRettangolo2() {
 
     // --- Abbassarsi (freccia giù) ---
     if (myGameArea.keys[40] && !rettangolo2.isJumping) {
-        rettangolo2.height = 40; // Accovacciato → metà altezza
-        rettangolo2.y = 300 - 40; // Adatta la posizione per stare a terra
-        rettangolo2.isCrouching = true; // Segna che è accovacciato
+        rettangolo2.height = 40;
+        rettangolo2.y = 300 - 40;
+        rettangolo2.isCrouching = true;
     } else if (!rettangolo2.isJumping) {
-        rettangolo2.height = 80; // Torna alla forma normale
+        rettangolo2.height = 80;
         rettangolo2.y = 300 - 80;
-        rettangolo2.isCrouching = false; // Non è più accovacciato
+        rettangolo2.isCrouching = false;
     }
 }
 
