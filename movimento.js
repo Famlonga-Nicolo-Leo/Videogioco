@@ -22,6 +22,17 @@ function controlliRettangolo1() {
         rettangolo1.height = 80; // Torna alla forma normale
         rettangolo1.y = 300 - 80; // Riporta altezza a livello terreno
     }
+
+    if (rettangolo1.speedX > 0) rettangolo1.facingRight = true;
+    if (rettangolo1.speedX < 0) rettangolo1.facingRight = false;
+    
+    // Attacchi Player 1
+    if (myGameArea.keys[81]) { // Q per pugno
+        attack(rettangolo1, 'punch');
+    }
+    if (myGameArea.keys[69]) { // E per calcio
+        attack(rettangolo1, 'kick');
+    }
 }
 
 function controlliRettangolo2() {
@@ -61,6 +72,17 @@ function controlliRettangolo2() {
         rettangolo2.height = 80;
         rettangolo2.y = 300 - 80;
         rettangolo2.isCrouching = false;
+    }
+
+    if (rettangolo2.speedX > 0) rettangolo2.facingRight = true;
+    if (rettangolo2.speedX < 0) rettangolo2.facingRight = false;
+    
+    // Attacchi Player 2
+    if (myGameArea.keys[79]) { // O per pugno
+        attack(rettangolo2, 'punch');
+    }
+    if (myGameArea.keys[80]) { // P per calcio
+        attack(rettangolo2, 'kick');
     }
 }
 

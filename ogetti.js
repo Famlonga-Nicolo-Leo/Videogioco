@@ -12,6 +12,20 @@ const rettangolo1 = {
     isJumping: false, // Se il rettangolo sta saltando
     isCrouching: false, // Se il rettangolo è accovacciato
     originalHeight: 80, // Altezza originale del rettangolo (usato per ripristinare altezza)
+    health: 100,
+    maxHealth: 100,
+    isAttacking: false,
+    attackType: null,
+    attackCooldown: 0,
+    attackDamage: {
+        punch: 10,
+        kick: 15
+    },
+    attackHitbox: {
+        punch: { x: 0, y: 0, width: 0, height: 0 },
+        kick: { x: 0, y: 0, width: 0, height: 0 }
+    },
+    facingRight: true,
 
     // Funzione che aggiorna la posizione e disegna il rettangolo
     update: function() {
@@ -34,6 +48,9 @@ const rettangolo1 = {
         const ctx = myGameArea.context;
         ctx.fillStyle = this.color; // Imposta il colore
         ctx.fillRect(this.x, this.y, this.width, this.height); // Disegna il rettangolo
+
+        updateCombat(this);
+        drawAttack(this);
     }
 };
 
@@ -51,6 +68,21 @@ const rettangolo2 = {
     isJumping: false, // Se il rettangolo sta saltando
     isCrouching: false, // Se il rettangolo è accovacciato
     originalHeight: 80, // Altezza originale del rettangolo (usato per ripristinare altezza)
+    health: 100,
+    maxHealth: 100,
+    isAttacking: false,
+    attackType: null,
+    attackCooldown: 0,
+    attackDamage: {
+        punch: 10,
+        kick: 15
+    },
+    attackHitbox: {
+        punch: { x: 0, y: 0, width: 0, height: 0 },
+        kick: { x: 0, y: 0, width: 0, height: 0 }
+    },
+    facingRight: true,
+
 
     // Funzione che aggiorna la posizione e disegna il rettangolo
     update: function() {
@@ -73,5 +105,8 @@ const rettangolo2 = {
         const ctx = myGameArea.context;
         ctx.fillStyle = this.color; // Imposta il colore
         ctx.fillRect(this.x, this.y, this.width, this.height); // Disegna il rettangolo
+
+        updateCombat(this);
+        drawAttack(this);
     }
 };

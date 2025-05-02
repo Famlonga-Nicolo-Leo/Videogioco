@@ -38,6 +38,7 @@ function updateGameArea() {
     aggiornaMovimento(); // Gestisce il movimento dei rettangoli in base ai tasti premuti
     rettangolo1.update(); // Aggiorna posizione e disegno del giocatore 1
     rettangolo2.update(); // Aggiorna posizione e disegno del giocatore 2
+    drawHealthBars();
 }
 
 function avvia() {
