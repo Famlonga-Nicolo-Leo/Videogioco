@@ -23,8 +23,8 @@ function controlliRettangolo1() {
         rettangolo1.y = 300 - 80; // Riporta altezza a livello terreno
     }
 
-    if (rettangolo1.speedX > 0) rettangolo1.facingRight = true;
-    if (rettangolo1.speedX < 0) rettangolo1.facingRight = false;
+    if (rettangolo1.speedX > 0) rettangolo1.destra = true;
+    if (rettangolo1.speedX < 0) rettangolo1.destra = false;
     
     // Attacchi Player 1
     if (myGameArea.keys[81]) { // Q per pugno
@@ -74,8 +74,8 @@ function controlliRettangolo2() {
         rettangolo2.isCrouching = false;
     }
 
-    if (rettangolo2.speedX > 0) rettangolo2.facingRight = true;
-    if (rettangolo2.speedX < 0) rettangolo2.facingRight = false;
+    if (rettangolo2.speedX > 0) rettangolo2.destra = true;
+    if (rettangolo2.speedX < 0) rettangolo2.destra = false;
     
     // Attacchi Player 2
     if (myGameArea.keys[79]) { // O per pugno

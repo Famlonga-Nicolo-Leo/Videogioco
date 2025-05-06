@@ -7,7 +7,7 @@ function updateCombat(player) {
     }
     
     // Aggiorna le hitbox degli attacchi
-    if (player.facingRight) {
+    if (player.destra) {
         player.attackHitbox.punch = { 
             x: player.x + player.width, 
             y: player.y + 20, 
@@ -83,7 +83,7 @@ function checkHit(attacker) {
     }
 }
 
-function drawHealthBars() {
+function vita() {
     const ctx = myGameArea.context;
     const barWidth = 200;
     const barHeight = 20;

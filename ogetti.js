@@ -25,7 +25,7 @@ const rettangolo1 = {
         punch: { x: 0, y: 0, width: 0, height: 0 },
         kick: { x: 0, y: 0, width: 0, height: 0 }
     },
-    facingRight: true,
+    destra: true,
 
     // Funzione che aggiorna la posizione e disegna il rettangolo
     update: function() {
@@ -81,7 +81,7 @@ const rettangolo2 = {
         punch: { x: 0, y: 0, width: 0, height: 0 },
         kick: { x: 0, y: 0, width: 0, height: 0 }
     },
-    facingRight: true,
+    destra: true,
 
 
     // Funzione che aggiorna la posizione e disegna il rettangolo
