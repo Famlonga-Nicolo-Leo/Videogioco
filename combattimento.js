@@ -93,13 +93,13 @@ function vita() {
     ctx.fillStyle = 'black';
     ctx.fillRect(padding, padding, barWidth, barHeight);
     ctx.fillStyle = 'red';
-    const p1HealthWidth = (rettangolo1.health / rettangolo1.maxHealth) * barWidth;
-    ctx.fillRect(padding, padding, p1HealthWidth, barHeight);
+    const vitap1 = (rettangolo1.health / rettangolo1.maxHealth) * barWidth;
+    ctx.fillRect(padding, padding, vitap1, barHeight);
     
     // Barra del Player 2
     ctx.fillStyle = 'black';
     ctx.fillRect(myGameArea.canvas.width - barWidth - padding, padding, barWidth, barHeight);
     ctx.fillStyle = 'green';
-    const p2HealthWidth = (rettangolo2.health / rettangolo2.maxHealth) * barWidth;
-    ctx.fillRect(myGameArea.canvas.width - barWidth - padding + (barWidth - p2HealthWidth), padding, p2HealthWidth, barHeight);
+    const vitap2 = (rettangolo2.health / rettangolo2.maxHealth) * barWidth;
+    ctx.fillRect(myGameArea.canvas.width - barWidth - padding + (barWidth - vitap2), padding, vitap2, barHeight);
 }
