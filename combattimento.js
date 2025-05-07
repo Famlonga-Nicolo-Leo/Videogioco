@@ -36,7 +36,7 @@ function updateCombat(player) {
     }
 }
 
-function drawAttack(player) {
+function disegna_attacco(player) {
     if (player.isAttacking) {
         const ctx = myGameArea.context;
         ctx.fillStyle = 'rgba(255, 255, 0, 0.5)';
@@ -76,8 +76,11 @@ function checkHit(attacker) {
             }
             
             if (defender.health <= 0) {
+                const fine_alert= false
                 defender.health = 0;
-                console.log("Game Over!");
+                if (fine_alert== false)
+                    alert("Game over!");
+                    fine_alert== true
             }
         }
     }

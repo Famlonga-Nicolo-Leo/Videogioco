@@ -50,7 +50,7 @@ const rettangolo1 = {
         ctx.fillRect(this.x, this.y, this.width, this.height); // Disegna il rettangolo
 
         updateCombat(this);
-        drawAttack(this);
+        disegna_attacco(this);
     }
 };
 
@@ -107,6 +107,6 @@ const rettangolo2 = {
         ctx.fillRect(this.x, this.y, this.width, this.height); // Disegna il rettangolo
 
         updateCombat(this);
-        drawAttack(this);
+        disegna_attacco(this);
     }
 };
