@@ -1,6 +1,7 @@
 const myGameArea = {
     canvas: document.getElementById("gameCanvas"), // Seleziona il canvas dalla pagina tramite l'ID
     keys: {}, // Oggetto per tenere traccia dei tasti premuti
+    
 
     start: function() {
         this.canvas.width = 800; // Imposta larghezza del canvas
@@ -21,7 +22,7 @@ const myGameArea = {
         });
 
         // Chiama la funzione updateGameArea ogni 20 millisecondi (cioè 50 volte al secondo)
-        this.interval = setInterval(updateGameArea, 20);
+        interval = setInterval(updateGameArea, 20);
     },
 
     clear: function() {
@@ -34,6 +35,7 @@ const myGameArea = {
 };
 
 function updateGameArea() {
+    console.log("SI STA")
     myGameArea.clear(); // Pulisce e ridisegna lo sfondo e il terreno
     aggiornaMovimento(); // Gestisce il movimento dei rettangoli in base ai tasti premuti
     rettangolo1.update(); // Aggiorna posizione e disegno del giocatore 1

@@ -79,8 +79,9 @@ function checkHit(attacker) {
                 const fine_alert= false
                 defender.health = 0;
                 if (fine_alert== false)
-                    alert("Game over!");
                     fine_alert== true
+                    clearInterval(interval);
+                    alert("Game over!");
             }
         }
     }
