@@ -75,7 +75,7 @@ function controlliRettangolo2() {
     }
 
     if (rettangolo2.speedX > 0) rettangolo2.destra = true;
-    if (rettangolo2.speedX < 0) rettangolo2.destra = false;
+    if (rettangolo2.speedX < 0) rettangolo2.destra = false;//pugno sistemato
     
     // Attacchi Player 2
     if (myGameArea.keys[79]) { // O per pugno

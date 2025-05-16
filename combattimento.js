@@ -67,7 +67,7 @@ function checkHit(attacker) {
             
             defender.health -= attacker.attackDamage[attacker.attackType];
             
-            const knockback = (attacker === rettangolo1) ? 5 : -5;
+            const knockback = (attacker === rettangolo1) ? 5 : -5;//knocback sistemato
             defender.x += knockback;
             
             if (defender.x < 0) defender.x = 0;
@@ -105,5 +105,5 @@ function vita() {
     ctx.fillRect(myGameArea.canvas.width - barWidth - padding, padding, barWidth, barHeight);
     ctx.fillStyle = 'green';
     const vitap2 = (rettangolo2.health / rettangolo2.maxHealth) * barWidth;
-    ctx.fillRect(myGameArea.canvas.width - barWidth - padding + (barWidth - vitap2), padding, vitap2, barHeight);
+    ctx.fillRect(myGameArea.canvas.width - barWidth - padding + (barWidth - vitap2), padding, vitap2, barHeight);//vita sistemata 
 }
