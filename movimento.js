@@ -19,7 +19,7 @@ function controlliRettangolo1() {
         rettangolo1.height = 40; // Riduci altezza per accovacciarsi
         rettangolo1.y = 300 - 40; // Correggi posizione per stare sul terreno
     } else if (!rettangolo1.isJumping) {
-        rettangolo1.height = 80; // Torna alla forma normale
+        rettangolo1.height = 80; // Torna alla forma normale 
         rettangolo1.y = 300 - 80; // Riporta altezza a livello terreno
     }
 
