@@ -34,7 +34,7 @@ function controlliRettangolo1() {
         attack(rettangolo1, 'kick');
     }
 }
-
+// controllo movimento rettangolo 2
 function controlliRettangolo2() {
     // --- Movimento orizzontale per Player 2 ---
     if (rettangolo2.isCrouching) {
