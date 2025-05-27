@@ -1,6 +1,7 @@
 // 🖼️ Caricamento immagini
 const idleFrames = [];
 const walkFrames = [];
+const punchFrames = [];
 
 for (let i = 1; i <= 4; i++) {
     const idleImg = new Image();
@@ -10,7 +11,12 @@ for (let i = 1; i <= 4; i++) {
     const walkImg = new Image();
     walkImg.src = `./sprites/w${i}.png`;
     walkFrames.push(walkImg);
+
+    const punchImg = new Image();
+    punchImg.src = `./sprites/p${i}.png`;
+    punchFrames.push(punchImg);
 }
+
 
 // 🟥 Player 1 (con animazioni camminata + idle)
 const rettangolo1 = {
@@ -44,45 +50,59 @@ const rettangolo1 = {
     frameInterval: 10,
 
     update: function () {
-        this.speedY += this.gravity;
-        this.y += this.speedY;
+    this.speedY += this.gravity;
+    this.y += this.speedY;
 
-        if (this.y + this.height > 300) {
-            this.y = 300 - this.height;
-            this.speedY = 0;
-            this.isJumping = false;
-        }
-
-        this.x += this.speedX;
-
-        const ctx = myGameArea.context;
-
-        this.frameTimer++;
-        if (this.frameTimer >= this.frameInterval) {
-            this.frameTimer = 0;
-            this.frameIndex++;
-        }
-
-        // Animazione CAMMINATA
-        if (this.speedX !== 0 && this.speedY === 0) {
-            if (this.frameIndex >= walkFrames.length) this.frameIndex = 0;
-            ctx.drawImage(walkFrames[this.frameIndex], this.x, this.y, this.width, this.height);
-        }
-        // Animazione IDLE
-        else if (this.speedX === 0 && this.speedY === 0 && !this.isJumping) {
-            if (this.frameIndex >= idleFrames.length) this.frameIndex = 0;
-            ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
-        }
-        // Salto → frame fisso
-        else {
-            ctx.drawImage(idleFrames[0], this.x, this.y, this.width, this.height);
-            this.frameIndex = 0;
-            this.frameTimer = 0;
-        }
-
-        updateCombat(this);
-        disegna_attacco(this);
+    if (this.y + this.height > 300) {
+        this.y = 300 - this.height;
+        this.speedY = 0;
+        this.isJumping = false;
     }
+
+    this.x += this.speedX;
+
+    const ctx = myGameArea.context;
+
+    this.frameTimer++;
+    if (this.frameTimer >= this.frameInterval) {
+        this.frameTimer = 0;
+        this.frameIndex++;
+    }
+
+    // 👉 Se sto ATTACCANDO con un PUGNO
+    if (this.isAttacking && this.attackType === 'punch') {
+        if (this.frameIndex >= punchFrames.length) {
+            this.isAttacking = false;
+            this.attackCooldown = 30; // cooldown attacco
+            this.frameIndex = 0;
+        } else {
+            ctx.drawImage(punchFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+        }
+    }
+
+    // 🏃‍♂️ CAMMINATA
+    else if (this.speedX !== 0 && this.speedY === 0) {
+        if (this.frameIndex >= walkFrames.length) this.frameIndex = 0;
+        ctx.drawImage(walkFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+    }
+
+    // 😐 IDLE
+    else if (this.speedX === 0 && this.speedY === 0 && !this.isJumping) {
+        if (this.frameIndex >= idleFrames.length) this.frameIndex = 0;
+        ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+    }
+
+    // 🔼 SALTO
+    else {
+        ctx.drawImage(idleFrames[0], this.x, this.y, this.width, this.height);
+        this.frameIndex = 0;
+        this.frameTimer = 0;
+    }
+
+    updateCombat(this);
+    disegna_attacco(this);
+}
+
 };
 
 // 🟩 Player 2 (resta statico, usa idle frame)

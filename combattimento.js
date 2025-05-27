@@ -2,8 +2,6 @@
 function updateCombat(player) {
     if (player.attackCooldown > 0) {
         player.attackCooldown--;
-    } else {
-        player.isAttacking = false;
     }
     
     // Aggiorna le hitbox degli attacchi
@@ -36,23 +34,26 @@ function updateCombat(player) {
     }
 }
 
+
 function disegna_attacco(player) {
     if (player.isAttacking) {
         const ctx = myGameArea.context;
-        ctx.fillStyle = 'rgba(255, 255, 0, 0.5)';
         const hitbox = player.attackHitbox[player.attackType];
         ctx.fillRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
     }
 }
 
+
 function attack(player, type) {
     if (!player.isAttacking && player.attackCooldown === 0) {
         player.isAttacking = true;
         player.attackType = type;
-        player.attackCooldown = 20;
+        player.frameIndex = 0;      // reset animazione attacco
+        player.frameTimer = 0;
         checkHit(player);
     }
 }
+
 
 function checkHit(attacker) {
     const defender = (attacker === rettangolo1) ? rettangolo2 : rettangolo1;
