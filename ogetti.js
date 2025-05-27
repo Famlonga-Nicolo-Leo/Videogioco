@@ -1,17 +1,36 @@
-// Rettangolo 1 (Player 1 - Rosso)
+// 🖼️ Caricamento immagini
+const idleFrames = [];
+const walkFrames = [];
+const punchFrames = [];
+
+for (let i = 1; i <= 4; i++) {
+    const idleImg = new Image();
+    idleImg.src = `./sprites/s${i}.png`;
+    idleFrames.push(idleImg);
+
+    const walkImg = new Image();
+    walkImg.src = `./sprites/w${i}.png`;
+    walkFrames.push(walkImg);
+
+    const punchImg = new Image();
+    punchImg.src = `./sprites/p${i}.png`;
+    punchFrames.push(punchImg);
+}
+
+
+// 🟥 Player 1 (con animazioni camminata + idle)
 const rettangolo1 = {
-    // Posizione iniziale (x, y) e dimensioni del rettangolo
     x: 100,
     y: 250,
     width: 40,
     height: 80,
-    color: 'red', // Colore del rettangolo
-    speedX: 0,    // Velocità orizzontale (dx/sx)
-    speedY: 0,    // Velocità verticale (su/giù)
-    gravity: 0.4, // Gravità (quanto influenzerà la velocità in Y ogni frame)
-    isJumping: false, // Se il rettangolo sta saltando
-    isCrouching: false, // Se il rettangolo è accovacciato
-    originalHeight: 80, // Altezza originale del rettangolo (usato per ripristinare altezza)
+    color: 'red',
+    speedX: 0,
+    speedY: 0,
+    gravity: 0.4,
+    isJumping: false,
+    isCrouching: false,
+    originalHeight: 80,
     health: 100,
     maxHealth: 100,
     isAttacking: false,
@@ -26,48 +45,79 @@ const rettangolo1 = {
         kick: { x: 0, y: 0, width: 0, height: 0 }
     },
     destra: true,
+    frameIndex: 0,
+    frameTimer: 0,
+    frameInterval: 10,
 
-    // Funzione che aggiorna la posizione e disegna il rettangolo
-    update: function() {
-        // Applica la gravità aumentando la velocità verticale (speedY)
-        this.speedY += this.gravity;
-        // Aggiunge la velocità verticale alla posizione Y
-        this.y += this.speedY;
+    update: function () {
+    this.speedY += this.gravity;
+    this.y += this.speedY;
 
-        // Ferma il rettangolo quando tocca il terreno (y = 300 è la base della canvas)
-        if (this.y + this.height > 300) {
-            this.y = 300 - this.height; // Posiziona il rettangolo sopra il terreno
-            this.speedY = 0; // Ferma la velocità verticale
-            this.isJumping = false; // Il rettangolo non sta più saltando
-        }
-
-        // Aggiorna la posizione orizzontale in base alla velocità orizzontale (speedX)
-        this.x += this.speedX;
-
-        // Disegna il rettangolo sulla canvas
-        const ctx = myGameArea.context;
-        ctx.fillStyle = this.color; // Imposta il colore
-        ctx.fillRect(this.x, this.y, this.width, this.height); // Disegna il rettangolo
-
-        updateCombat(this);
-        disegna_attacco(this);
+    if (this.y + this.height > 300) {
+        this.y = 300 - this.height;
+        this.speedY = 0;
+        this.isJumping = false;
     }
+
+    this.x += this.speedX;
+
+    const ctx = myGameArea.context;
+
+    this.frameTimer++;
+    if (this.frameTimer >= this.frameInterval) {
+        this.frameTimer = 0;
+        this.frameIndex++;
+    }
+
+    // 👉 Se sto ATTACCANDO con un PUGNO
+    if (this.isAttacking && this.attackType === 'punch') {
+        if (this.frameIndex >= punchFrames.length) {
+            this.isAttacking = false;
+            this.attackCooldown = 30; // cooldown attacco
+            this.frameIndex = 0;
+        } else {
+            ctx.drawImage(punchFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+        }
+    }
+
+    // 🏃‍♂️ CAMMINATA
+    else if (this.speedX !== 0 && this.speedY === 0) {
+        if (this.frameIndex >= walkFrames.length) this.frameIndex = 0;
+        ctx.drawImage(walkFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+    }
+
+    // 😐 IDLE
+    else if (this.speedX === 0 && this.speedY === 0 && !this.isJumping) {
+        if (this.frameIndex >= idleFrames.length) this.frameIndex = 0;
+        ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+    }
+
+    // 🔼 SALTO
+    else {
+        ctx.drawImage(idleFrames[0], this.x, this.y, this.width, this.height);
+        this.frameIndex = 0;
+        this.frameTimer = 0;
+    }
+
+    updateCombat(this);
+    disegna_attacco(this);
+}
+
 };
 
-// Rettangolo 2 (Player 2 - Verde)
+// 🟩 Player 2 (resta statico, usa idle frame)
 const rettangolo2 = {
-    // Posizione iniziale (x, y) e dimensioni del rettangolo
     x: 660,
     y: 250,
     width: 40,
     height: 80,
-    color: 'green', // Colore del rettangolo
-    speedX: 0,    // Velocità orizzontale (dx/sx)
-    speedY: 0,    // Velocità verticale (su/giù)
-    gravity: 0.4, // Gravità (quanto influenzerà la velocità in Y ogni frame)
-    isJumping: false, // Se il rettangolo sta saltando
-    isCrouching: false, // Se il rettangolo è accovacciato
-    originalHeight: 80, // Altezza originale del rettangolo (usato per ripristinare altezza)
+    color: 'green',
+    speedX: 0,
+    speedY: 0,
+    gravity: 0.4,
+    isJumping: false,
+    isCrouching: false,
+    originalHeight: 80,
     health: 100,
     maxHealth: 100,
     isAttacking: false,
@@ -82,29 +132,34 @@ const rettangolo2 = {
         kick: { x: 0, y: 0, width: 0, height: 0 }
     },
     destra: true,
+    frameIndex: 0,
+    frameTimer: 0,
+    frameInterval: 10,
 
-
-    // Funzione che aggiorna la posizione e disegna il rettangolo
-    update: function() {
-        // Applica la gravità aumentando la velocità verticale (speedY)
+    update: function () {
         this.speedY += this.gravity;
-        // Aggiunge la velocità verticale alla posizione Y
         this.y += this.speedY;
 
-        // Ferma il rettangolo quando tocca il terreno (y = 300 è la base della canvas)
         if (this.y + this.height > 300) {
-            this.y = 300 - this.height; // Posiziona il rettangolo sopra il terreno
-            this.speedY = 0; // Ferma la velocità verticale
-            this.isJumping = false; // Il rettangolo non sta più saltando
+            this.y = 300 - this.height;
+            this.speedY = 0;
+            this.isJumping = false;
         }
 
-        // Aggiorna la posizione orizzontale in base alla velocità orizzontale (speedX)
         this.x += this.speedX;
 
-        // Disegna il rettangolo sulla canvas
         const ctx = myGameArea.context;
-        ctx.fillStyle = this.color; // Imposta il colore
-        ctx.fillRect(this.x, this.y, this.width, this.height); // Disegna il rettangolo
+
+        if (this.speedX === 0 && this.speedY === 0 && !this.isJumping) {
+            this.frameTimer++;
+            if (this.frameTimer >= this.frameInterval) {
+                this.frameTimer = 0;
+                this.frameIndex = (this.frameIndex + 1) % idleFrames.length;
+            }
+            ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+        } else {
+            ctx.drawImage(idleFrames[0], this.x, this.y, this.width, this.height);
+        }
 
         updateCombat(this);
         disegna_attacco(this);
