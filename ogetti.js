@@ -9,6 +9,9 @@ kickImg.src = './sprites/c1.png';
 const jumpImg = new Image();
 jumpImg.src = './sprites/sa1.png';
 
+const crouchImg = new Image();
+crouchImg.src = './sprites/ac1.png';
+
 for (let i = 1; i <= 4; i++) {
     const idleImg = new Image();
     idleImg.src = `./sprites/s${i}.png`;
@@ -28,12 +31,13 @@ const rettangolo1 = {
     x: 100,
     y: 250,
     width: 70,
-    height: 120,
+    height: 50,
     color: 'red',
     speedX: 0,
     speedY: 0,
     gravity: 0.4,
     isJumping: false,
+    isCrouching: false,
     health: 100,
     maxHealth: 100,
     isAttacking: false,
@@ -72,42 +76,45 @@ const rettangolo1 = {
             this.frameIndex++;
         }
 
-        // 👉 Se sto ATTACCANDO con un PUGNO (animazione a più frame)
+        // Attacchi (come prima)
         if (this.isAttacking && this.attackType === 'punch') {
             if (this.frameIndex >= punchFrames.length) {
                 this.isAttacking = false;
-                this.attackCooldown = 30; // cooldown attacco
+                this.attackCooldown = 30;
                 this.frameIndex = 0;
             } else {
                 ctx.drawImage(punchFrames[this.frameIndex], this.x, this.y, this.width, this.height);
-                return; // disegna solo animazione attacco
+                return;
             }
-        }
-
-        // 👉 Se sto ATTACCANDO con un CALCIO (usa sprite singolo)
-        else if (this.isAttacking && this.attackType === 'kick') {
+        } else if (this.isAttacking && this.attackType === 'kick') {
             ctx.drawImage(kickImg, this.x, this.y, this.width, this.height);
-            this.frameIndex++; // aumenta per triggerare la fine attacco
-            if (this.frameIndex > 15) { // durata del calcio
+            this.frameIndex++;
+            if (this.frameIndex > 15) {
                 this.isAttacking = false;
                 this.attackCooldown = 40;
                 this.frameIndex = 0;
             }
-            return; // disegna solo animazione attacco
+            return;
         }
 
-        // 🏃‍♂️ CAMMINATA
+        // Mostra sprite accovacciato se isCrouching true
+        if (this.isCrouching && this.speedY === 0) {
+            ctx.drawImage(crouchImg, this.x, this.y, this.width, this.height);
+            return;
+        }
+
+        // Camminata
         if (this.speedX !== 0 && this.speedY === 0) {
             if (this.frameIndex >= walkFrames.length) this.frameIndex = 0;
             ctx.drawImage(walkFrames[this.frameIndex], this.x, this.y, this.width, this.height);
         }
-        // 🔼 SALTO (usa sprite singolo)
+        // Salto
         else if (this.isJumping || this.speedY !== 0) {
             ctx.drawImage(jumpImg, this.x, this.y, this.width, this.height);
             this.frameIndex = 0;
             this.frameTimer = 0;
         }
-        // 😐 IDLE
+        // Idle
         else {
             if (this.frameIndex >= idleFrames.length) this.frameIndex = 0;
             ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
@@ -115,14 +122,15 @@ const rettangolo1 = {
 
         updateCombat(this);
     }
+
 };
 
 // 🟩 Player 2 (resta statico, usa idle frame)
 const rettangolo2 = {
     x: 660,
     y: 250,
-    width: 70,
-    height: 120,
+    width: 90,
+    height: 300,
     color: 'green',
     speedX: 0,
     speedY: 0,
