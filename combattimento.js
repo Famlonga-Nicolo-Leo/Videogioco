@@ -50,10 +50,9 @@ function attack(player, type) {
         player.attackType = type;
         player.frameIndex = 0;      // reset animazione attacco
         player.frameTimer = 0;
-        checkHit(player);
+        player.hasHit = false;      // 🔴 aggiungi questa riga qui
     }
 }
-
 
 function checkHit(attacker) {
     const defender = (attacker === rettangolo1) ? rettangolo2 : rettangolo1;
