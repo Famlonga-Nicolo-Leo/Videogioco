@@ -3,6 +3,12 @@ const idleFrames = [];
 const walkFrames = [];
 const punchFrames = [];
 
+const kickImg = new Image();
+kickImg.src = './sprites/c1.png';
+
+const jumpImg = new Image();
+jumpImg.src = './sprites/sa1.png';
+
 for (let i = 1; i <= 4; i++) {
     const idleImg = new Image();
     idleImg.src = `./sprites/s${i}.png`;
@@ -17,20 +23,17 @@ for (let i = 1; i <= 4; i++) {
     punchFrames.push(punchImg);
 }
 
-
-// 🟥 Player 1 (con animazioni camminata + idle)
+// 🟥 Player 1 (con animazioni camminata + idle + pugno + salto + calcio)
 const rettangolo1 = {
     x: 100,
     y: 250,
-    width: 40,
-    height: 80,
+    width: 70,
+    height: 120,
     color: 'red',
     speedX: 0,
     speedY: 0,
     gravity: 0.4,
     isJumping: false,
-    isCrouching: false,
-    originalHeight: 80,
     health: 100,
     maxHealth: 100,
     isAttacking: false,
@@ -47,77 +50,84 @@ const rettangolo1 = {
     destra: true,
     frameIndex: 0,
     frameTimer: 0,
-    frameInterval: 10,
+    frameInterval: 25,
 
     update: function () {
-    this.speedY += this.gravity;
-    this.y += this.speedY;
+        this.speedY += this.gravity;
+        this.y += this.speedY;
 
-    if (this.y + this.height > 300) {
-        this.y = 300 - this.height;
-        this.speedY = 0;
-        this.isJumping = false;
-    }
-
-    this.x += this.speedX;
-
-    const ctx = myGameArea.context;
-
-    this.frameTimer++;
-    if (this.frameTimer >= this.frameInterval) {
-        this.frameTimer = 0;
-        this.frameIndex++;
-    }
-
-    // 👉 Se sto ATTACCANDO con un PUGNO
-    if (this.isAttacking && this.attackType === 'punch') {
-        if (this.frameIndex >= punchFrames.length) {
-            this.isAttacking = false;
-            this.attackCooldown = 30; // cooldown attacco
-            this.frameIndex = 0;
-        } else {
-            ctx.drawImage(punchFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+        if (this.y + this.height > 300) {
+            this.y = 300 - this.height;
+            this.speedY = 0;
+            this.isJumping = false;
         }
+
+        this.x += this.speedX;
+
+        const ctx = myGameArea.context;
+
+        this.frameTimer++;
+        if (this.frameTimer >= this.frameInterval) {
+            this.frameTimer = 0;
+            this.frameIndex++;
+        }
+
+        // 👉 Se sto ATTACCANDO con un PUGNO (animazione a più frame)
+        if (this.isAttacking && this.attackType === 'punch') {
+            if (this.frameIndex >= punchFrames.length) {
+                this.isAttacking = false;
+                this.attackCooldown = 30; // cooldown attacco
+                this.frameIndex = 0;
+            } else {
+                ctx.drawImage(punchFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+                return; // disegna solo animazione attacco
+            }
+        }
+
+        // 👉 Se sto ATTACCANDO con un CALCIO (usa sprite singolo)
+        else if (this.isAttacking && this.attackType === 'kick') {
+            ctx.drawImage(kickImg, this.x, this.y, this.width, this.height);
+            this.frameIndex++; // aumenta per triggerare la fine attacco
+            if (this.frameIndex > 15) { // durata del calcio
+                this.isAttacking = false;
+                this.attackCooldown = 40;
+                this.frameIndex = 0;
+            }
+            return; // disegna solo animazione attacco
+        }
+
+        // 🏃‍♂️ CAMMINATA
+        if (this.speedX !== 0 && this.speedY === 0) {
+            if (this.frameIndex >= walkFrames.length) this.frameIndex = 0;
+            ctx.drawImage(walkFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+        }
+        // 🔼 SALTO (usa sprite singolo)
+        else if (this.isJumping || this.speedY !== 0) {
+            ctx.drawImage(jumpImg, this.x, this.y, this.width, this.height);
+            this.frameIndex = 0;
+            this.frameTimer = 0;
+        }
+        // 😐 IDLE
+        else {
+            if (this.frameIndex >= idleFrames.length) this.frameIndex = 0;
+            ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+        }
+
+        updateCombat(this);
     }
-
-    // 🏃‍♂️ CAMMINATA
-    else if (this.speedX !== 0 && this.speedY === 0) {
-        if (this.frameIndex >= walkFrames.length) this.frameIndex = 0;
-        ctx.drawImage(walkFrames[this.frameIndex], this.x, this.y, this.width, this.height);
-    }
-
-    // 😐 IDLE
-    else if (this.speedX === 0 && this.speedY === 0 && !this.isJumping) {
-        if (this.frameIndex >= idleFrames.length) this.frameIndex = 0;
-        ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
-    }
-
-    // 🔼 SALTO
-    else {
-        ctx.drawImage(idleFrames[0], this.x, this.y, this.width, this.height);
-        this.frameIndex = 0;
-        this.frameTimer = 0;
-    }
-
-    updateCombat(this);
-    disegna_attacco(this);
-}
-
 };
 
 // 🟩 Player 2 (resta statico, usa idle frame)
 const rettangolo2 = {
     x: 660,
     y: 250,
-    width: 40,
-    height: 80,
+    width: 70,
+    height: 120,
     color: 'green',
     speedX: 0,
     speedY: 0,
     gravity: 0.4,
     isJumping: false,
-    isCrouching: false,
-    originalHeight: 80,
     health: 100,
     maxHealth: 100,
     isAttacking: false,
@@ -134,7 +144,7 @@ const rettangolo2 = {
     destra: true,
     frameIndex: 0,
     frameTimer: 0,
-    frameInterval: 10,
+    frameInterval: 20,
 
     update: function () {
         this.speedY += this.gravity;
@@ -162,6 +172,110 @@ const rettangolo2 = {
         }
 
         updateCombat(this);
-        disegna_attacco(this);
     }
 };
+
+// Sistema di combattimento
+function updateCombat(player) {
+    if (player.attackCooldown > 0) {
+        player.attackCooldown--;
+    }
+
+    // Aggiorna le hitbox degli attacchi in base alla direzione
+    if (player.destra) {
+        player.attackHitbox.punch = {
+            x: player.x + player.width,
+            y: player.y + 20,
+            width: 30,
+            height: 20
+        };
+        player.attackHitbox.kick = {
+            x: player.x + player.width,
+            y: player.y + 40,
+            width: 40,
+            height: 20
+        };
+    } else {
+        player.attackHitbox.punch = {
+            x: player.x - 30,
+            y: player.y + 20,
+            width: 30,
+            height: 20
+        };
+        player.attackHitbox.kick = {
+            x: player.x - 40,
+            y: player.y + 40,
+            width: 40,
+            height: 20
+        };
+    }
+}
+
+function disegna_attacco(player) {
+    if (player.isAttacking) {
+        const ctx = myGameArea.context;
+        const hitbox = player.attackHitbox[player.attackType];
+        ctx.fillRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+    }
+}
+
+function attack(player, type) {
+    if (!player.isAttacking && player.attackCooldown === 0) {
+        player.isAttacking = true;
+        player.attackType = type;
+        player.frameIndex = 0;      // reset animazione attacco
+        player.frameTimer = 0;
+        checkHit(player);
+    }
+}
+
+function checkHit(attacker) {
+    const defender = (attacker === rettangolo1) ? rettangolo2 : rettangolo1;
+
+    if (attacker.isAttacking) {
+        const attackHitbox = attacker.attackHitbox[attacker.attackType];
+
+        if (attackHitbox.x < defender.x + defender.width &&
+            attackHitbox.x + attackHitbox.width > defender.x &&
+            attackHitbox.y < defender.y + defender.height &&
+            attackHitbox.y + attackHitbox.height > defender.y) {
+
+            defender.health -= attacker.attackDamage[attacker.attackType];
+
+            const knockback = (attacker === rettangolo1) ? 5 : -5;
+            defender.x += knockback;
+
+            if (defender.x < 0) defender.x = 0;
+            if (defender.x + defender.width > myGameArea.canvas.width) {
+                defender.x = myGameArea.canvas.width - defender.width;
+            }
+
+            if (defender.health <= 0) {
+                defender.health = 0;
+                clearInterval(interval);
+                alert("Game over!");
+            }
+        }
+    }
+}
+
+function vita() {
+    const ctx = myGameArea.context;
+    const barWidth = 200;
+    const barHeight = 20;
+    const padding = 20;
+
+    // Barra del Player 1
+    ctx.fillStyle = 'black';
+    ctx.fillRect(padding, padding, barWidth, barHeight);
+    ctx.fillStyle = 'red';
+    const vitap1 = (rettangolo1.health / rettangolo1.maxHealth) * barWidth;
+    ctx.fillRect(padding, padding, vitap1, barHeight);
+
+    // Barra del Player 2
+    ctx.fillStyle = 'black';
+    ctx.fillRect(myGameArea.canvas.width - barWidth - padding, padding, barWidth, barHeight);
+    ctx.fillStyle = 'green';
+    const vitap2 = (rettangolo2.health / rettangolo2.maxHealth) * barWidth;
+    ctx.fillRect(myGameArea.canvas.width - barWidth - padding + (barWidth - vitap2), padding, vitap2, barHeight);
+}
