@@ -1,4 +1,3 @@
-// 🖼️ Caricamento immagini
 const idleFrames = [];
 const walkFrames = [];
 const punchFrames = [];
@@ -26,7 +25,6 @@ for (let i = 1; i <= 4; i++) {
     punchFrames.push(punchImg);
 }
 
-// 🟥 Player 1 (con animazioni camminata + idle + pugno + salto + calcio)
 const rettangolo1 = {
     x: 100,
     y: 250,
@@ -57,89 +55,80 @@ const rettangolo1 = {
     frameInterval: 25,
 
     update: function () {
-    this.speedY += this.gravity;
-    this.y += this.speedY;
+        this.speedY += this.gravity;
+        this.y += this.speedY;
 
-    if (this.y + this.height > 300) {
-        this.y = 300 - this.height;
-        this.speedY = 0;
-        this.isJumping = false;
-    }
-
-    this.x += this.speedX;
-
-    const ctx = myGameArea.context;
-
-    this.frameTimer++;
-    if (this.frameTimer >= this.frameInterval) {
-        this.frameTimer = 0;
-        this.frameIndex++;
-    }
-
-    // Attacchi (come prima)
-    if (this.isAttacking && this.attackType === 'punch') {
-    if (this.frameIndex >= punchFrames.length) {
-        this.isAttacking = false;
-        this.attackCooldown = 30;
-        this.frameIndex = 0;
-    } else {
-        ctx.drawImage(punchFrames[this.frameIndex], this.x, this.y, this.width, this.height);
-
-        if (!this.hasHit) {
-            checkHit(this);
-            this.hasHit = true;  // blocca ulteriori danni per questo attacco
+        if (this.y + this.height > 300) {
+            this.y = 300 - this.height;
+            this.speedY = 0;
+            this.isJumping = false;
         }
 
-        return;
+        this.x += this.speedX;
+
+        const ctx = myGameArea.context;
+
+        this.frameTimer++;
+        if (this.frameTimer >= this.frameInterval) {
+            this.frameTimer = 0;
+            this.frameIndex++;
+        }
+
+        if (this.isAttacking && this.attackType === 'punch') {
+            if (this.frameIndex >= punchFrames.length) {
+                this.isAttacking = false;
+                this.attackCooldown = 30;
+                this.frameIndex = 0;
+            } else {
+                ctx.drawImage(punchFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+
+                if (!this.hasHit) {
+                    checkHit(this);
+                    this.hasHit = true;
+                }
+
+                return;
+            }
+        } else if (this.isAttacking && this.attackType === 'kick') {
+            ctx.drawImage(kickImg, this.x, this.y, this.width, this.height);
+
+            if (!this.hasHit) {
+                checkHit(this);
+                this.hasHit = true;
+            }
+
+            this.frameIndex++;
+            if (this.frameIndex > 15) {
+                this.isAttacking = false;
+                this.attackCooldown = 40;
+                this.frameIndex = 0;
+            }
+            return;
+        }
+
+        if (this.isCrouching && this.speedY === 0) {
+            ctx.drawImage(crouchImg, this.x, this.y, this.width, this.height);
+            return;
+        }
+
+        if (this.speedX !== 0 && this.speedY === 0) {
+            if (this.frameIndex >= walkFrames.length) this.frameIndex = 0;
+            ctx.drawImage(walkFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+        }
+        else if (this.isJumping || this.speedY !== 0) {
+            ctx.drawImage(jumpImg, this.x, this.y, this.width, this.height);
+            this.frameIndex = 0;
+            this.frameTimer = 0;
+        }
+        else {
+            if (this.frameIndex >= idleFrames.length) this.frameIndex = 0;
+            ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
+        }
+
+        updateCombat(this);
     }
-} else if (this.isAttacking && this.attackType === 'kick') {
-    ctx.drawImage(kickImg, this.x, this.y, this.width, this.height);
-
-    if (!this.hasHit) {
-        checkHit(this);
-        this.hasHit = true;
-    }
-
-    this.frameIndex++;
-    if (this.frameIndex > 15) {
-        this.isAttacking = false;
-        this.attackCooldown = 40;
-        this.frameIndex = 0;
-    }
-    return;
-}
-
-
-    // Mostra sprite accovacciato se isCrouching true
-    if (this.isCrouching && this.speedY === 0) {
-        ctx.drawImage(crouchImg, this.x, this.y, this.width, this.height);
-        return;
-    }
-
-    // Camminata
-    if (this.speedX !== 0 && this.speedY === 0) {
-        if (this.frameIndex >= walkFrames.length) this.frameIndex = 0;
-        ctx.drawImage(walkFrames[this.frameIndex], this.x, this.y, this.width, this.height);
-    }
-    // Salto
-    else if (this.isJumping || this.speedY !== 0) {
-        ctx.drawImage(jumpImg, this.x, this.y, this.width, this.height);
-        this.frameIndex = 0;
-        this.frameTimer = 0;
-    }
-    // Idle
-    else {
-        if (this.frameIndex >= idleFrames.length) this.frameIndex = 0;
-        ctx.drawImage(idleFrames[this.frameIndex], this.x, this.y, this.width, this.height);
-    }
-
-    updateCombat(this);
-}
-
-
 };
 
-// 🟩 Player 2 (resta statico, usa idle frame)
 const rettangolo2 = {
     x: 660,
     y: 250,
@@ -197,13 +186,11 @@ const rettangolo2 = {
     }
 };
 
-// Sistema di combattimento
 function updateCombat(player) {
     if (player.attackCooldown > 0) {
         player.attackCooldown--;
     }
 
-    // Aggiorna le hitbox degli attacchi in base alla direzione
     if (player.destra) {
         player.attackHitbox.punch = {
             x: player.x + player.width,
@@ -245,7 +232,7 @@ function attack(player, type) {
     if (!player.isAttacking && player.attackCooldown === 0) {
         player.isAttacking = true;
         player.attackType = type;
-        player.frameIndex = 0;      // reset animazione attacco
+        player.frameIndex = 0;
         player.frameTimer = 0;
         checkHit(player);
     }
@@ -287,14 +274,12 @@ function vita() {
     const barHeight = 20;
     const padding = 20;
 
-    // Barra del Player 1
     ctx.fillStyle = 'black';
     ctx.fillRect(padding, padding, barWidth, barHeight);
     ctx.fillStyle = 'red';
     const vitap1 = (rettangolo1.health / rettangolo1.maxHealth) * barWidth;
     ctx.fillRect(padding, padding, vitap1, barHeight);
 
-    // Barra del Player 2
     ctx.fillStyle = 'black';
     ctx.fillRect(myGameArea.canvas.width - barWidth - padding, padding, barWidth, barHeight);
     ctx.fillStyle = 'green';
